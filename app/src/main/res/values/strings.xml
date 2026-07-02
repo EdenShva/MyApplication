@@ -1,3 +1,31 @@
 <resources>
-    <string name="app_name">My Application</string>
+
+    <string name="app_name">TaskWise</string>
+
+    <string name="subtitle">Manage your daily tasks</string>
+
+    <string name="login">Login</string>
+
+    <string name="register">Register</string>
+
+    <string name="full_name">Full name</string>
+
+    <string name="email">Email</string>
+
+    <string name="password">Password</string>
+
+    <string name="confirm_password">Confirm password</string>
+
+    <string name="login_register_switch">Don\'t have an account? Register</string>
+
+    <string name="register_login_switch">Already have an account? Login</string>
+
+    <string name="fill_all_fields">Please fill all fields</string>
+
+    <string name="enter_email_password">Please enter email and password</string>
+
+    <string name="passwords_not_match">Passwords do not match</string>
+
+    <string name="account_created">Account created successfully</string>
+
 </resources>
