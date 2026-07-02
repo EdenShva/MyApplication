@@ -35,4 +35,9 @@
     <string name="profile">Profile</string>
     <string name="tasks_placeholder">tasks will appear here</string>
 
+    <string name="task_title">Task title</string>
+    <string name="task_description">Task description</string>
+    <string name="save_task">Save Task</string>
+    <string name="profile_placeholder">User profile details will appear here</string>
+
 </resources>
