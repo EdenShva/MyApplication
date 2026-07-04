@@ -11,16 +11,61 @@
         android:layout_height="wrap_content"
         android:text="@string/profile"
         android:textColor="#1E293B"
-        android:textSize="28sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvProfileInfo"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="@string/profile_placeholder"
-        android:textColor="#64748B"
-        android:textSize="16sp" />
+        android:layout_marginTop="24dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvProfileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_name"
+            android:textColor="#1E293B"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvProfileEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/profile_email"
+            android:textColor="#64748B"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvTotalTasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="@string/total_tasks"
+            android:textColor="#1E293B"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvCompletedTasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/completed_tasks"
+            android:textColor="#1E293B"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/logout"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -40,4 +40,20 @@
     <string name="save_task">Save Task</string>
     <string name="profile_placeholder">User profile details will appear here</string>
 
+    <string name="my_tasks">My Tasks</string>
+    <string name="no_tasks_yet">No tasks yet. Add your first task.</string>
+    <string name="priority">Priority</string>
+    <string name="low">Low</string>
+    <string name="medium">Medium</string>
+    <string name="high">High</string>
+    <string name="profile_name">TaskWise User</string>
+    <string name="profile_email">user@email.com</string>
+    <string name="total_tasks">Total tasks: 0</string>
+    <string name="completed_tasks">Completed tasks: 0</string>
+    <string name="logout">Logout</string>
+
+    <string name="enter_task_title">Please enter task title</string>
+    <string name="user_not_logged_in">User is not logged in</string>
+    <string name="task_saved">Task saved successfully</string>
+
 </resources>

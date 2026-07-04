@@ -1,64 +1,103 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddTaskFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.myapplication.databinding.FragmentAddTaskBinding;
+import com.example.myapplication.models.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class AddTaskFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AddTaskFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddTaskFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddTaskFragment newInstance(String param1, String param2) {
-        AddTaskFragment fragment = new AddTaskFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FragmentAddTaskBinding binding;
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_task, container, false);
+        binding = FragmentAddTaskBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        binding.btnSaveTask.setOnClickListener(v -> saveTask());
+    }
+
+    private void saveTask() {
+        String title = binding.etTaskTitle.getText().toString().trim();
+        String description = binding.etTaskDescription.getText().toString().trim();
+        String priority = getSelectedPriority();
+
+        if (title.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.enter_task_title, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(requireContext(), R.string.user_not_logged_in, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = auth.getCurrentUser().getUid();
+
+        Task task = new Task(
+                userId,
+                title,
+                description,
+                priority,
+                false,
+                System.currentTimeMillis()
+        );
+
+        db.collection("tasks")
+                .add(task)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(requireContext(), R.string.task_saved, Toast.LENGTH_SHORT).show();
+                    clearFields();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    private String getSelectedPriority() {
+        int selectedId = binding.rgPriority.getCheckedRadioButtonId();
+
+        if (selectedId == binding.rbHigh.getId()) {
+            return "High";
+        }
+
+        if (selectedId == binding.rbLow.getId()) {
+            return "Low";
+        }
+
+        return "Medium";
+    }
+
+    private void clearFields() {
+        binding.etTaskTitle.setText("");
+        binding.etTaskDescription.setText("");
+        binding.rbMedium.setChecked(true);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

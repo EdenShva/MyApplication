@@ -9,17 +9,26 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/home"
+        android:text="@string/my_tasks"
         android:textColor="#1E293B"
-        android:textSize="28sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tvEmptyTasks"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="Your tasks will appear here"
+        android:layout_marginTop="18dp"
+        android:background="#FFFFFF"
+        android:padding="18dp"
+        android:text="@string/no_tasks_yet"
         android:textColor="#64748B"
         android:textSize="16sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTasks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

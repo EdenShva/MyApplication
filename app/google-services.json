@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "140317954857",
+    "project_id": "taskwise-ed7d4",
+    "storage_bucket": "taskwise-ed7d4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140317954857:android:aafd0404e0379fa29f1d38",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKYztM0w26o4a477RRiA7YGS9pVQwxWkA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
