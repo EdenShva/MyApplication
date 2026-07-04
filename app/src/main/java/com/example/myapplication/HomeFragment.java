@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment {
                 .document(task.getId())
                 .delete()
                 .addOnSuccessListener(unused ->
-                        Toast.makeText(requireContext(), "Task deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.task_deleted, Toast.LENGTH_SHORT).show()
                 );
     }
 
