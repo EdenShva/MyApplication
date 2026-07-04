@@ -1,64 +1,115 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.example.myapplication.adapters.TaskAdapter;
+import com.example.myapplication.databinding.FragmentHomeBinding;
+import com.example.myapplication.models.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public HomeFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FragmentHomeBinding binding;
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
+    private TaskAdapter adapter;
+    private final List<Task> tasks = new ArrayList<>();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        adapter = new TaskAdapter(tasks, new TaskAdapter.TaskActionListener() {
+            @Override
+            public void onTaskChecked(Task task, boolean isChecked) {
+                updateTaskStatus(task, isChecked);
+            }
+
+            @Override
+            public void onTaskDeleted(Task task) {
+                deleteTask(task);
+            }
+        });
+        binding.rvTasks.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvTasks.setAdapter(adapter);
+
+        loadTasks();
+    }
+
+    private void loadTasks() {
+        if (auth.getCurrentUser() == null) {
+            return;
+        }
+
+        String userId = auth.getCurrentUser().getUid();
+
+        db.collection("tasks")
+                .whereEqualTo("userId", userId)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(requireContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    tasks.clear();
+
+                    if (value != null) {
+                        for (var document : value.getDocuments()) {
+                            Task task = document.toObject(Task.class);
+                            if (task != null) {
+                                task.setId(document.getId());
+                                tasks.add(task);
+                            }
+                        }
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    binding.tvEmptyTasks.setVisibility(tasks.isEmpty() ? View.VISIBLE : View.GONE);
+                });
+    }
+    private void updateTaskStatus(Task task, boolean completed) {
+        db.collection("tasks")
+                .document(task.getId())
+                .update("completed", completed);
+    }
+
+    private void deleteTask(Task task) {
+        db.collection("tasks")
+                .document(task.getId())
+                .delete()
+                .addOnSuccessListener(unused ->
+                        Toast.makeText(requireContext(), "Task deleted", Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
